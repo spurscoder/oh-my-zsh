@@ -24,7 +24,7 @@ ZSH_THEME="risto"
 # HYPHEN_INSENSITIVE="true"
 
 # Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
+DISABLE_AUTO_UPDATE="true"
 
 # Uncomment the following line to change how often to auto-update (in days).
 # export UPDATE_ZSH_DAYS=13
@@ -44,7 +44,10 @@ ZSH_THEME="risto"
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
 # much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
+DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+SAVEHIST=100000
+HISTFILE=~/.zsh_history
 
 # Uncomment the following line if you want to change the command execution time
 # stamp shown in the history command output.
@@ -64,6 +67,8 @@ ZSH_THEME="risto"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
   git
+  autojump
+  git ssh-agent
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -99,113 +104,64 @@ source $ZSH/oh-my-zsh.sh
 
 #------------------------------------- my software ------------------------------------------
 
-if [ $HOSTNAME = 'gpu09' ]; then
-    # lib
-    export LD_LIBRARY_PATH=/ssd1/exec/wangjp/tools/miniconda/envs/fluency/lib:$LD_LIBRARY_PATH
-    export LD_LIBRARY_PATH=/ssd1/exec/wangjp/tools/miniconda/envs/torch041/lib:$LD_LIBRARY_PATH
-    export LD_LIBRARY_PATH=/ssd1/exec/wangjp/tools/miniconda/envs/torch101/lib:$LD_LIBRARY_PATH
+if [ -d "/ssd1/exec/wangjp/" ]; then
+    # llvm and clang-format
+    export PATH=/ssd1/exec/wangjp/tools/llvm/bin:$PATH
+
     # miniconda
     export PATH=/ssd1/exec/wangjp/tools/miniconda/bin:$PATH
+
+    # python3
+    export PATH=/ssd1/exec/wangjp/tools/python3/bin:$PATH
+
+    # vim8.1
+    export PATH=/ssd1/exec/wangjp/tools/vim81/bin:$PATH
+
+    # tmux
+    export PATH=/ssd1/exec/wangjp/tools/tmux/bin:$PATH
 
     # bin
     export PATH=/ssd1/exec/wangjp/tools/bin:$PATH
 
-    # vim8.1
-    export PATH=/ssd1/exec/wangjp/tools/vim81/bin:$PATH
+    export PATH=/ssd1/exec/wangjp/tools/cmake-3.18.0/local/bin:$PATH
+    export PATH=/usr/local/cuda/bin:/ssd1/slurm/bin:/usr/libexec/git-core:$PATH
+
+    export LD_LIBRARY_PATH=/disk1/fukai/software/lib:$LD_LIBRARY_PATH
+    export LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/lib:$LD_LIBRARY_PATH
 
     # cuda9
-    export PATH=/usr/local/cuda-9.1/bin:$PATH
-    export LD_LIBRARY_PATH=/usr/local/cuda-9.1/lib64:$LD_LIBRARY_PATH
-    export CUDA_HOME=/usr/local/cuda-9.1
+    export CUDA_HOME=/usr/local/cuda
+    export TORCH_HOME=/ssd1/exec/wangjp/tools/torchhub/
+    export CMAKE_ROOT=/ssd1/exec/wangjp/tools/cmake-3.18.0/local
 
-    # tree
-    export PATH=/ssd1/exec/wangjp/tools/tree/bin:$PATH
-    export PATH=/ssd1/exec/wangjp/commons/tokenizer:$PATH
+    SUBWORD=/ssd1/exec/wangjp/commons/subword-nmt
+    SELFTOK=/ssd1/exec/wangjp/commons/tokenizer/ydmt_language/bin
+    ERRANT=/ssd1/exec/wangjp/commons/errant
+    M2SCORER=/ssd1/exec/wangjp/commons/m2scorer/m2scorer/
+    FAST_ALIGN=/ssd1/exec/wangjp/commons/fast_align/build/fast_align
 
-    alias squeue='squeue --format="%6i%12P%36j%14M%10u%3t%8b%12Q%12N"'
-    alias sinfo='sinfo --format="%12P%8a%16N%14G%5c%16C%12t"'
-    source activate torch041
+    alias yidlegpu='yidlegpu -g'
+    alias squeue='squeue --format="%8i%9P%50j%11M%7u%3t%6b%7Q%8N"'
+    alias j='jobs'
 
-fi
+    ulimit -c unlimited
 
-if [ $HOSTNAME = 'gpu06' ]; then
-    # lib
-    export LD_LIBRARY_PATH=/ssd1/exec/wangjp/tools/miniconda/envs/fluency/lib:$LD_LIBRARY_PATH
-    export LD_LIBRARY_PATH=/ssd1/exec/wangjp/tools/miniconda/envs/torch041/lib:$LD_LIBRARY_PATH
-    export LD_LIBRARY_PATH=/ssd1/exec/wangjp/tools/miniconda/envs/torch101/lib:$LD_LIBRARY_PATH
-    # miniconda
-    export PATH=/ssd1/exec/wangjp/tools/miniconda/bin:$PATH
-
-    # bin
-    export PATH=/ssd1/exec/wangjp/tools/bin:$PATH
-
-    # vim8.1
-    export PATH=/ssd1/exec/wangjp/tools/vim81/bin:$PATH
-
-    # cuda9
-    export PATH=/usr/local/cuda-9.2/bin:$PATH
-    export LD_LIBRARY_PATH=/usr/local/cuda-9.2/lib64:$LD_LIBRARY_PATH
-    export CUDA_HOME=/usr/local/cuda-9.2
-
-    # tree
-    export PATH=/ssd1/exec/wangjp/tools/tree/bin:$PATH
-    export PATH=/ssd1/exec/wangjp/commons/tokenizer:$PATH
-
-    alias squeue='squeue --format="%6i%12P%36j%14M%10u%3t%8b%12Q%12N"'
-    alias sinfo='sinfo --format="%12P%8a%16N%14G%5c%16C%12t"'
-    source activate torch041
-
-fi
-if [ $HOSTNAME = 'gpu84.corp.yodao.com' ]; then
-    # lib
-    export LD_LIBRARY_PATH=/ssd1/exec/wangjp/tools/miniconda/envs/fluency/lib:$LD_LIBRARY_PATH
-    export LD_LIBRARY_PATH=/ssd1/exec/wangjp/tools/miniconda/envs/torch041/lib:$LD_LIBRARY_PATH
-    export LD_LIBRARY_PATH=/ssd1/exec/wangjp/tools/miniconda/envs/torch101/lib:$LD_LIBRARY_PATH
-    # miniconda
-    export PATH=/ssd1/exec/wangjp/tools/miniconda/bin:$PATH
-
-    # bin
-    export PATH=/ssd1/exec/wangjp/tools/bin:$PATH
-
-    # vim8.1
-    export PATH=/ssd1/exec/wangjp/tools/vim81/bin:$PATH
-
-    # cuda10
-    export PATH=/usr/local/cuda-10.0/bin:$PATH
-    export LD_LIBRARY_PATH=/usr/local/cuda-10.0/lib64:$LD_LIBRARY_PATH
-    export CUDA_HOME=/usr/local/cuda-10.0
-
-    # tree
-    export PATH=/ssd1/exec/wangjp/tools/tree/bin:$PATH
-    export PATH=/ssd1/exec/wangjp/commons/tokenizer:$PATH
-
-    alias squeue='squeue --format="%6i%12P%36j%14M%10u%3t%8b%12Q%12N"'
-    alias sinfo='sinfo --format="%12P%8a%16N%14G%5c%16C%12t"'
-    source activate torch041
-
-fi
-if [ $HOSTNAME = 'zj034' ]; then
+elif [ $HOSTNAME = 'zj034' ]; then
+    export PATH=/disk2/wangjp/.tools/bin:$PATH
     export PATH=/disk2/wangjp/.tools/vim81/bin:$PATH
     export PATH=/disk2/wangjp/.tools/valgrind/bin:$PATH
-    export PATH=/disk2/wangjp/.tools/bin:$PATH
     export PATH=/disk2/wangjp/.tools/swig3/bin:$PATH
-
+    export PATH=/disk2/wangjp/.tools/graphviz/bin:$PATH
     export PATH=/disk2/wangjp/.tools/miniconda2/bin:$PATH
+
     export PATH=/usr/libexec/git-core:$PATH
 
     export LD_LIBRARY_PATH=/disk2/wangjp/.tools/miniconda2/envs/torch041/lib:$LD_LIBRARY_PATH
 
     ulimit -c unlimited
 
-    source activate torch041
+elif [ $HOSTNAME = 'zj186.corp.yodao.com' ]; then
+    export PATH=/disk1/wangjp/tools/miniconda/bin:$PATH
+
 fi
 
-if [ $HOSTNAME = 'gpu08' ]; then
-    export PATH=/disk1/wangjp/.tools/vim81/bin:$PATH
-
-    export PATH=/disk1/wangjp/.tools/miniconda2/bin:$PATH
-
-    export LD_LIBRARY_PATH=/disk1/wangjp/.tools/miniconda2/envs/torch041/lib:$LD_LIBRARY_PATH
-
-    #source activate torch041
-fi
