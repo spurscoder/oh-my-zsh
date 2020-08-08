@@ -46,7 +46,7 @@ DISABLE_AUTO_UPDATE="true"
 # much, much faster.
 DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-SAVEHIST=100000
+SAVEHIST=10000
 HISTFILE=~/.zsh_history
 
 # Uncomment the following line if you want to change the command execution time
@@ -55,7 +55,7 @@ HISTFILE=~/.zsh_history
 # "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
 # or set a custom format using the strftime function format specifications,
 # see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
+HIST_STAMPS="yyyy-mm-dd"
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
@@ -68,7 +68,10 @@ HISTFILE=~/.zsh_history
 plugins=(
   git
   autojump
-  git ssh-agent
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+  extract
+  z
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -164,4 +167,16 @@ elif [ $HOSTNAME = 'zj186.corp.yodao.com' ]; then
     export PATH=/disk1/wangjp/tools/miniconda/bin:$PATH
 
 fi
+
+alias cp="cp -i"
+
+# ctrl-r escape escape ctrl-s backspace
+
+# bat
+
+# git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+# git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+# vi .oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+# typeset -g ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=blue'
+# ctrl-f
 
