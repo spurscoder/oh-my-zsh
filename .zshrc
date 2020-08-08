@@ -72,6 +72,7 @@ plugins=(
   zsh-syntax-highlighting
   extract
   z
+  git ssh-agent
 )
 
 source $ZSH/oh-my-zsh.sh
